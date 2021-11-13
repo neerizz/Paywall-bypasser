@@ -56,16 +56,16 @@ async function bypass() {
     let current_tab = await getCurrentTab();
     if (current_tab) {
         var urlObj = parseURL(current_tab.url);
-        var domain = urlObj.domain.replace('www','');
+        var domain = urlObj.domain.replace('www', '');
         chrome.cookies.getAll({ domain: domain }, function (cookies) {
-        for (var i = 0; i < cookies.length; i++) {
+            for (var i = 0; i < cookies.length; i++) {
                 chrome.cookies.remove({
                     url: "https://" + cookies[i].domain + cookies[i].path,
                     name: cookies[i].name
                 });
             }
 
-            chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+            chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
                 chrome.tabs.reload(tabs[0].id);
                 window.close();
             });

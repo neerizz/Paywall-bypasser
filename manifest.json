@@ -8,9 +8,9 @@
         "default_popup": "popup.html"
     },
     "host_permissions": [
-        "<all_urls>"
+        "<all_urls>"        
     ],
-    "permissions": ["activeTab", "tabs", "cookies"],
+    "permissions": ["activeTab", "tabs", "cookies", "webRequest"],
     "icons": {
         "16": "icons/logo.png",
         "48": "icons/logo.png",

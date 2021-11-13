@@ -1,0 +1,19 @@
+{
+    "name": "Paywall-Bypasser", 
+    "description": "Free Loading is fun xD",
+    "manifest_version": 3,
+    "version": "1.0", 
+    "action": {
+        "default_icon": "logo.png",
+        "default_popup": "popup.html"
+    },
+    "host_permissions": [
+        "<all_urls>"
+    ],
+    "permissions": ["activeTab", "tabs", "cookies"],
+    "icons": {
+        "16": "icons/logo.png",
+        "48": "icons/logo.png",
+        "128": "icons/logo.png"
+    }
+}

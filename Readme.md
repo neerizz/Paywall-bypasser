@@ -8,3 +8,7 @@
 - Click the "Load Unpacked" button on the chrome extensions page
 - Now drag the "Paywall-bypasser-main" folder into the chrome window and open it
 - You now have the extension. You can pin it and enable in incognito mode using the details button
+
+## How to use?
+
+- Whenever you encounter a paywall/login wall on a website, just click on the extension icon and click on the bypass paywall button. Voila!

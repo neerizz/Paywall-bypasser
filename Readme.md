@@ -1,6 +1,7 @@
 
 # How to setup?
 
+### Version 1.1 is here!! 
 
 - Click https://github.com/Yoddha99/Paywall-bypasser/archive/refs/heads/main.zip
 - Extract the zip file. You will now have a folder named "Paywall-bypasser-main"

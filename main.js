@@ -1,4 +1,4 @@
-function parseURL(url) {
+async function parseURL(url) {
     parsed_url = {}
 
     if (url == null || url.length == 0)
@@ -46,39 +46,96 @@ function parseURL(url) {
     return parsed_url;
 }
 
+var current_url;
+
 async function getCurrentTab() {
-    let queryOptions = { active: true, currentWindow: true };
-    let [tab] = await chrome.tabs.query(queryOptions);
-    return tab;
+    return new Promise((resolve, reject) => {
+        try {
+            chrome.tabs.query({
+                active: true,
+            }, function (tabs) {
+                resolve(tabs[0].url);
+            })
+        } catch (e) {
+            reject(e);
+        }
+    })
 }
 
-async function bypass() {
-    let current_tab = await getCurrentTab();
-    if (current_tab) {
-        var urlObj = parseURL(current_tab.url);
-        // var domain = urlObj.domain.replace('www', '');
-        var url = urlObj.protocol+"://"+urlObj.domain;
-        chrome.cookies.getAll({ url:url }, function (cookies) {  
-            for (var i = 0; i < cookies.length; i++) {
-                chrome.cookies.remove({
-                    url: "https://" + cookies[i].domain + cookies[i].path,
-                    name: cookies[i].name
+async function clearCookies(url) {
+    chrome.cookies.getAll({ url: url }, function (cookies) {
+        for (var i = 0; i < cookies.length; i++) {
+            chrome.cookies.remove({
+                url: "https://" + cookies[i].domain + cookies[i].path,
+                name: cookies[i].name
+            }, async function () {
+                chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+                    chrome.tabs.reload(tabs[0].id);
                 });
-            }
-
-            chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-                chrome.tabs.reload(tabs[0].id);
                 window.close();
             });
-        })
+        }
+    })
+}
+
+async function bypass(){
+    var current_url = await getCurrentTab();
+    if(current_url){
+        var urlObj = await parseURL(current_url);
+        if(urlObj){
+            var host_name = urlObj.host;
+            var val = {};
+            val[host_name] = true;
+            chrome.storage.sync.set(val, async function(val) {
+                var cookie_url = urlObj.protocol + "://" + urlObj.domain;
+                clearCookies(cookie_url);
+            });
+        }
     }
 }
 
-function documentEvents() {
-    document.getElementById('bypass-this').addEventListener("click", bypass);
+async function removeBypass(){
+    var current_url = await getCurrentTab();
+    if(current_url){
+        var urlObj = await parseURL(current_url);
+        if(urlObj){
+            var host_name = urlObj.host;
+            chrome.storage.sync.remove(host_name, async function(val) {
+                chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+                    chrome.tabs.reload(tabs[0].id);
+                });
+                window.close();
+            });
+        }
+    }
+}
+
+async function documentEvents() {
+    var togglebtn = document.getElementById('bypass-this');
+    var warning = document.getElementById('warning');
+    var current_url = await getCurrentTab();
+    if(current_url){
+        var urlObj = await parseURL(current_url);
+        if(urlObj){
+            var host_name = urlObj.host;
+            chrome.storage.sync.get(host_name, function(result) {
+                if(result[host_name]){
+                    togglebtn.classList.remove('btn-dark');
+                    togglebtn.classList.add('btn-success');
+                    togglebtn.innerText = "Remove Bypass";
+                    warning.style.display= "none";
+                    togglebtn.addEventListener("click", removeBypass);
+                }else {
+                    togglebtn.classList.remove('btn-success');
+                    togglebtn.classList.add('btn-dark');
+                    togglebtn.innerText = "Bypass Wall";
+                    warning.style.display= "block";
+                    togglebtn.addEventListener("click", bypass);
+                }
+            });
+        }
+    }
 }
 
 document.addEventListener('DOMContentLoaded', documentEvents, false);
-
-
 

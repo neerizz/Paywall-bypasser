@@ -56,8 +56,9 @@ async function bypass() {
     let current_tab = await getCurrentTab();
     if (current_tab) {
         var urlObj = parseURL(current_tab.url);
-        var domain = urlObj.domain.replace('www', '');
-        chrome.cookies.getAll({ domain: domain }, function (cookies) {  
+        // var domain = urlObj.domain.replace('www', '');
+        var url = urlObj.protocol+"://"+urlObj.domain;
+        chrome.cookies.getAll({ url:url }, function (cookies) {  
             for (var i = 0; i < cookies.length; i++) {
                 chrome.cookies.remove({
                     url: "https://" + cookies[i].domain + cookies[i].path,

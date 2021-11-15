@@ -16,3 +16,6 @@
 ## How to use?
 
 - Whenever you encounter a paywall/login wall on a website, just click on the extension icon and click on the bypass paywall button. Voila!
+
+> Disclaimer: Do not use this extension to violate the terms of service/use of any website.
+
